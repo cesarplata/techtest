@@ -1,74 +1,71 @@
 package com.napptilus.techtest.integration;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import com.napptilus.techtest.model.Precio;
+import com.napptilus.techtest.controller.PrecioController;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 public class TestingWebApplicationTest {
 
-	private String baseUrl = "http://localhost";
+	@Autowired
+	private PrecioController precioController;
 
-	@LocalServerPort
-	private int port;
+	@Test
+	public void test1() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(precioController).build();
+		String body = "{\"appDate\" : \"2020-06-14-10.00.00\",  \"productId\" : 35455, \"brandId\" : 1}";
 
-	private static RestTemplate restTemplate = null;
-
-	@BeforeAll
-	public static void init() {
-		restTemplate = new RestTemplate();
-	}
-
-	@BeforeEach
-	public void setUp() {
-		baseUrl = baseUrl.concat(":").concat(port + "").concat("/api");
+		mockMvc.perform(get("/api/Precio").contentType(MediaType.APPLICATION_JSON).content(body))
+				.andExpect(status().isOk()).andExpect(content().json(
+						"{\"productId\": 35455,\"brandId\":1,\"priceList\": 1,\"startDate\": \"2020-06-14-00.00.00\",\"endDate\":\"2020-12-31-23.59.59\",\"price\": 36}"));
 	}
 
 	@Test
-	public void getPrecioTest() {
+	public void test2() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(precioController).build();
+		String body = "{\"appDate\" : \"2020-06-14-16.00.00\",  \"productId\" : 35455, \"brandId\" : 1}";
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_JSON);
-
-		// body
-		
-		String body = "{\"appDate\" : \"2020-06-14-10.00.00\",  \"productId\" : 35455, \"brandId\" : 1}";
-		HttpEntity<String> entity = new HttpEntity<String>(body, headers);
-
-		ResponseEntity<Precio> err = restTemplate.exchange(baseUrl.concat("/Precio"), HttpMethod.GET, entity,
-				Precio.class);
-
-		assertAll(() -> assertNotNull(err), () -> assertEquals(HttpStatus.NOT_FOUND, err.getStatusCode()),
-				() -> assertNull(err.getBody()));
+		mockMvc.perform(get("/api/Precio").contentType(MediaType.APPLICATION_JSON).content(body))
+				.andExpect(status().isOk()).andExpect(content().json(
+						"{\"productId\": 35455,\"brandId\":1,\"priceList\": 2,\"startDate\": \"2020-06-14-15.00.00\",\"endDate\":\"2020-06-14-18.30.00\",\"price\": 25}"));
 	}
 
-//	@Test
-//	public void getPrecioTest() throws Exception {
-//		// Arrange
-//		String json = "{\"appDate\": \"2020-06-14-10.00.00\",  \"productId\": 35455,\"brandId\": 1}";
-//		var task = restTemplate.getForObject("http://localhost:" + port + "/Precio/", Precio.class);
-//		// .andExpect(content().json("{\"productId\": 35455,\"brandId\":
-//		// 4,\"priceList\": 1,\"startDate\": \"2020-06-14-05.00.00\",\"endDate\":
-//		// \"2021-01-01-04.59.59\",\"price\": 36}"));
-//	}
+	@Test
+	public void test3() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(precioController).build();
+		String body = "{\"appDate\" : \"2020-06-14-21.00.00\",  \"productId\" : 35455, \"brandId\" : 1}";
 
+		mockMvc.perform(get("/api/Precio").contentType(MediaType.APPLICATION_JSON).content(body))
+				.andExpect(status().isOk()).andExpect(content().json(
+						"{\"productId\": 35455,\"brandId\":1,\"priceList\": 1,\"startDate\": \"2020-06-14-00.00.00\",\"endDate\":\"2020-12-31-23.59.59\",\"price\": 36}"));
+	}
+
+	@Test
+	public void test4() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(precioController).build();
+		String body = "{\"appDate\" : \"2020-06-15-10.00.00\",  \"productId\" : 35455, \"brandId\" : 1}";
+
+		mockMvc.perform(get("/api/Precio").contentType(MediaType.APPLICATION_JSON).content(body))
+				.andExpect(status().isOk()).andExpect(content().json(
+						"{\"productId\": 35455,\"brandId\":1,\"priceList\": 3,\"startDate\": \"2020-06-15-00.00.00\",\"endDate\":\"2020-06-15-11.00.00\",\"price\": 31}"));
+	}
+
+	@Test
+	public void test5() throws Exception {
+		MockMvc mockMvc = MockMvcBuilders.standaloneSetup(precioController).build();
+		String body = "{\"appDate\" : \"2020-06-16-21.00.00\",  \"productId\" : 35455, \"brandId\" : 1}";
+
+		mockMvc.perform(get("/api/Precio").contentType(MediaType.APPLICATION_JSON).content(body))
+				.andExpect(status().isOk()).andExpect(content().json(
+						"{\"productId\": 35455,\"brandId\":1,\"priceList\": 4,\"startDate\": \"2020-06-15-16.00.00\",\"endDate\":\"2020-12-31-23.59.59\",\"price\": 39}"));
+	}
 }

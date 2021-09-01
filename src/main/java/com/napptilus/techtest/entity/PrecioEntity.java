@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,31 +27,30 @@ public class PrecioEntity implements Serializable {
 
 	@Id
 	@Column(name = "price_list")
-	private Integer priceList;	
+	private Integer priceList;
 
 	@Column(name = "brand_id")
 	private Integer brandId;
-	
+
 	@Column(name = "start_date")
 	private Date startDate;
 
 	@Column(name = "end_date")
 	private Date endDate;
-	
+
 	@Column(name = "product_id")
 	private Integer productId;
-	
+
 	@Column(name = "priority")
 	private Integer priority;
-	
+
 	@Column(name = "price")
 	private Integer price;
-	
+
 	@Column(name = "currency")
 	private String curr;
-	
+
 	@Column(name = "last_update_by")
 	private String LastUpdateBy;
-	
-	
+
 }
